@@ -16,4 +16,4 @@ https://papilio26.github.io/passwordQuiz/
 - HTML
 - CSS
 - JavaScript
-- Web Audio API（音のフィードバック）
+- Web Audio API（音の出力）

@@ -53,19 +53,21 @@
   <p id="manager"></p>
 
   <script>
+    // 問題リスト
     const quizList = [
       {pass:"aaaaaa",correct:false,reason:"同じ文字を並べただけなので、誰でも思いつきます"},
-      {pass:"password",correct:false,reason:"「パスワード」という単語そのままで、悪い人が一番最初に試す言葉です"},
+      {pass:"password",correct:false,reason:"「パスワード」という単語そのままで、悪い人がよく試す言葉です"},
       {pass:"qwertyuiop",correct:false,reason:"キーボードの上の段をそのまま打っただけです"},
       {pass:"252525",correct:false,reason:"同じ数字の繰り返しは簡単にバレます"},
       {pass:"X7#mK!9qL2",correct:true,reason:"規則性がないので、悪い人が予測するのが非常に難しいです"},
       {pass:"123456",correct:false,reason:"世界中で一番多く使われているパスワードです。絶対にダメです"},
       {pass:"Jt8#qZ!5wR",correct:true,reason:"規則性がないので、悪い人が予測するのが非常に難しいです"},
       {pass:"49jgKFo",correct:true,reason:"規則性がないので、悪い人が予測するのが非常に難しいです"},
-      {pass:"banana09",correct:false,reason:"辞書に載っている単語は危険です。数字を足しても簡単に解読されます"},
+      {pass:"banana09",correct:false,reason:"辞書に載っている単語と数字では簡単に解読されます"},
       {pass:"poiuytrewq",correct:false,reason:"キーボードの逆順打ちも簡単にバレます"},
     ]
 
+    // 問題表示
     let quiz = document.getElementById("quiz");
     for(let i = 0; i < 10; i++) {
       quiz.innerHTML += `
@@ -79,24 +81,30 @@
       `;
     }
 
+    // 答え合わせ
     function showResult() {
       let score = 0;
       for(let i = 0; i < 10; i++) {
+        // 0.5秒間隔で答え合わせ
         setTimeout(function() {
           let box = document.getElementById("q" + i);
           box.scrollIntoView({ behavior: "smooth", block: "center" });
 
           const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+          // 正解時の音
           const trueSound = audioCtx.createOscillator();
           trueSound.connect(audioCtx.destination);
           trueSound.type = 'triangle';
           trueSound.frequency.setValueAtTime(880, audioCtx.currentTime);
 
+          // 不正解時の音
           const falseSound = audioCtx.createOscillator();
           falseSound.connect(audioCtx.destination);
           falseSound.type = 'triangle';
           falseSound.frequency.setValueAtTime(220, audioCtx.currentTime);
 
+          // 正解判定と点数集計
           let selected = document.querySelector(`input[name="q${i}"]:checked`);
           if(selected && selected.value === "yes" && quizList[i].correct === true) {
             box.classList.add("correct");
@@ -115,9 +123,9 @@
             document.getElementById("reason" + i).textContent = "不正解..." + quizList[i].reason;
             falseSound.start();
             falseSound.stop(audioCtx.currentTime + 0.3);
-
           }
 
+          // 結果表示
           if(i === 9) {
             document.getElementById("result").textContent = "10問中" + score + "問正解！";
             document.getElementById("manager").textContent = "強いパスワードを自分で覚えるのは大変です。パスワードマネージャーを使うと、強いパスワードを自動で作って管理してくれます。まずは無料で使えるBitwardenやGoogleのパスワードマネージャーを試してみましょう！";
